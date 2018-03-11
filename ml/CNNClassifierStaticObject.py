@@ -14,12 +14,13 @@ from keras import metrics, Input
 
 from sklearn.model_selection import train_test_split
 
-from gmot.ml.CNNClassifierKrFTSimpleStackedBase import CNNClassifierKrFTSimpleStackedBase
+from mlsp.ml.CNNClassifierKrFTSimpleStackedBase import CNNClassifierKrFTSimpleStackedBase
 
 logger = logging.getLogger(__name__)
 
 
 def main():
+    # usage
     clsfr = CNNClassifierStaticObject()
     clsfr.train_data_dir = '../traindata/mode_cnn'
     clsfr.intermediate_data_dir = '../features'
@@ -47,6 +48,9 @@ class CNNClassifierStaticObject(CNNClassifierKrFTSimpleStackedBase):
     input_channels = 3
     input_shape_bottom = (input_x, input_y, input_channels)  # channels_last
     input_shape_top = (7, 7, 512)
+    dense_shape = [256, 256]
+    train_loss = 'categorical_crossentropy'  # categorical_crossentropy, binary_crossentropy
+    model_top_activation = 'softmax'  # linear, softmax
 
     def __init__(self):
         super().__init__()
@@ -87,11 +91,11 @@ class CNNClassifierStaticObject(CNNClassifierKrFTSimpleStackedBase):
 
         model = self._get_model_top()
         sgd = Adam(lr=start, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
-        model.compile(loss='categorical_crossentropy', optimizer=sgd,
+        model.compile(loss=self.train_loss, optimizer=sgd,
                       metrics=[metrics.mae, metrics.categorical_accuracy])
         learning_rates = np.linspace(start, stop, epoch)
         cb_lr = LearningRateScheduler(lambda epoch: float(learning_rates[epoch]))
-        cb_es = EarlyStopping(monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto')
+        cb_es = EarlyStopping(monitor='val_loss', min_delta=0, patience=10, verbose=0, mode='auto')
 
         hist = model.fit(train_data, train_labels,
                          epochs=epoch,
@@ -118,10 +122,10 @@ class CNNClassifierStaticObject(CNNClassifierKrFTSimpleStackedBase):
             inputs = Input(self.input_shape_top)
             # _get_model_bottom().output_shape is ok but its stupid to create bottom model just to get the output_shape
             x = Flatten(name='flatten')(inputs)
-            x = Dense(256, activation='relu', name='fc1')(x)
+            x = Dense(self.dense_shape[0], activation='relu', name='fc1')(x)
             x = Dropout(0.5)(x)
-            x = Dense(256, activation='relu', name='fc2')(x)
-            predictions = Dense(len(self.classes), activation='softmax', name='predictions')(x)
+            x = Dense(self.dense_shape[1], activation='relu', name='fc2')(x)
+            predictions = Dense(len(self.classes), activation=self.model_top_activation, name='predictions')(x)
             model = Model(inputs=inputs, outputs=predictions)
             self.model_top = model
         return self.model_top

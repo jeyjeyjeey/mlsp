@@ -4,7 +4,7 @@ import functools
 
 from sklearn.ensemble import RandomForestClassifier
 
-from gmot.ml.ClassifierImageLoaderBase import ClassifierImageLoaderBase
+from mlsp.ml.ClassifierImageLoaderBase import ClassifierImageLoaderBase
 
 logger = logging.getLogger(__name__)
 

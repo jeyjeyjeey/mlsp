@@ -42,13 +42,13 @@ class ClassifierImageLoaderBase:
             # p = ProgressBar().start(len(files), 1)
             for i, file in enumerate(files):
                 title, ext = os.path.splitext(file)
-                if ext != '.png':
+                if ext not in ('.png', '.jpg', '.jpeg', '.JPG', '.PNG'):
                     continue
                 sample = cv2.imread(os.path.abspath(img_dir + file),
                                     read_mode)
                 if sample is None:
                     logger.error('Failed to read image')
-                    return None
+                    raise Exception('Failed to read image')
                 samples.append(sample)
                 labels.append(character)
                 # p.update(i + 1)

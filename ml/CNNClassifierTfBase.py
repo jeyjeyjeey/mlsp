@@ -4,7 +4,7 @@ import logging
 from abc import abstractmethod
 import tensorflow as tf
 
-from gmot.ml.ClassifierImageLoaderBase import ClassifierImageLoaderBase
+from mlsp.ml.ClassifierImageLoaderBase import ClassifierImageLoaderBase
 
 logger = logging.getLogger(__name__)
 

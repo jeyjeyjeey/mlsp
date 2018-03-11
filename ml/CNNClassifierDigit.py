@@ -7,7 +7,7 @@ import functools
 import numpy as np
 import tensorflow as tf
 
-from gmot.ml.CNNClassifierTfBase import CNNClassifierTfBase
+from mlsp.ml.CNNClassifierTfBase import CNNClassifierTfBase
 
 logger = logging.getLogger(__name__)
 

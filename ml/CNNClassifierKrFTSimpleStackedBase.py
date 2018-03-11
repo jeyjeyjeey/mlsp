@@ -8,7 +8,7 @@ import numpy as np
 
 from keras.models import Model
 
-from gmot.ml.ClassifierImageLoaderBase import ClassifierImageLoaderBase
+from mlsp.ml.ClassifierImageLoaderBase import ClassifierImageLoaderBase
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class CNNClassifierKrFTSimpleStackedBase(ClassifierImageLoaderBase):
 
     # business methods structure
     def run_train(self):
-        if not (self._is_exist_intermediate_files or os.path.exists(self.weight_file)):
+        if not (self._is_exist_intermediate_files() or os.path.exists(self.weight_file)):
             self._extract_mediate_data()
         if not os.path.exists(self.weight_file):
             self._train_top()
